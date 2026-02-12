@@ -65,7 +65,7 @@ const AdminLogin = () => {
               onChange={handleChange}
               required
               className="input-field"
-              placeholder="admin@comfyyarns.com"
+              placeholder="Enter your email"
             />
           </div>
 

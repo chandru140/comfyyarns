@@ -115,7 +115,7 @@ const Home = () => {
             See our latest creations and behind-the-scenes on Instagram
           </p>
           <a 
-            href="https://instagram.com" 
+            href="https://www.instagram.com/comfyyarns/?hl=en" 
             target="_blank" 
             rel="noopener noreferrer"
             className="btn-primary inline-flex items-center gap-2"
