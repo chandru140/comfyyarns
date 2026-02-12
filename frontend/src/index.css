@@ -1,0 +1,197 @@
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply font-body bg-off-white text-gray-800;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-body;
+  }
+}
+
+@layer components {
+  /* Button Styles */
+  .btn-primary {
+    @apply bg-baby-pink-500 text-white px-6 py-3 rounded-full font-medium 
+           hover:bg-baby-pink-600 transition-all duration-300 
+           shadow-pink-md hover:shadow-pink-lg transform hover:-translate-y-0.5;
+  }
+  
+  .btn-secondary {
+    @apply bg-white text-baby-pink-500 px-6 py-3 rounded-full font-medium 
+           border-2 border-baby-pink-500 hover:bg-baby-pink-50 
+           transition-all duration-300 shadow-pink-sm hover:shadow-pink-md;
+  }
+  
+  .btn-whatsapp {
+    @apply bg-green-500 text-white px-6 py-2.5 rounded-full font-medium 
+           hover:bg-green-600 transition-all duration-300 
+           shadow-md hover:shadow-lg flex items-center gap-2;
+  }
+  
+  /* Card Styles */
+  .card {
+    @apply bg-white rounded-2xl shadow-pink-md hover:shadow-pink-xl 
+           transition-all duration-300 overflow-hidden;
+  }
+  
+  .product-card {
+    @apply card transform hover:-translate-y-2 cursor-pointer;
+  }
+  
+  /* Input Styles */
+  .input-field {
+    @apply w-full px-4 py-3 rounded-xl border-2 border-gray-200 
+           focus:border-baby-pink-400 focus:outline-none transition-colors
+           bg-white;
+  }
+  
+  .textarea-field {
+    @apply input-field resize-none;
+  }
+  
+  /* Container */
+  .container-custom {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+  
+  /* Section Padding */
+  .section-padding {
+    @apply py-12 md:py-20;
+  }
+  
+  /* Logo Text */
+  .logo-text {
+    @apply font-logo text-3xl md:text-4xl text-baby-pink-600 
+           hover:text-baby-pink-700 transition-colors;
+  }
+}
+
+@layer utilities {
+  .gradient-pink {
+    background: linear-gradient(135deg, #FFB6C1 0%, #FFC0CB 100%);
+  }
+  
+  .gradient-soft {
+    background: linear-gradient(135deg, #FFF5F7 0%, #FFE4E1 100%);
+  }
+  
+  .text-gradient-pink {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(135deg, #FF6B8A 0%, #FF8FA3 100%);
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #FFF5F7;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #FFB6C1;
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #FF8FA3;
+}
+
+/* Smooth scroll behavior */
+html {
+  scroll-behavior: smooth;
+}
+
+/* WhatsApp Floating Button */
+.whatsapp-float {
+  position: fixed;
+  width: 60px;
+  height: 60px;
+  bottom: 30px;
+  right: 30px;
+  background-color: #25d366;
+  color: #FFF;
+  border-radius: 50px;
+  text-align: center;
+  font-size: 30px;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  animation: pulse-whatsapp 2s infinite;
+}
+
+.whatsapp-float:hover {
+  background-color: #128C7E;
+  transform: scale(1.1);
+  box-shadow: 2px 2px 15px rgba(37, 211, 102, 0.5);
+}
+
+.whatsapp-float svg {
+  width: 32px;
+  height: 32px;
+}
+
+@keyframes pulse-whatsapp {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7);
+  }
+  50% {
+    box-shadow: 0 0 0 10px rgba(37, 211, 102, 0);
+  }
+}
+
+/* Enhanced Product Card Animations */
+.product-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(255, 182, 193, 0.3);
+}
+
+.product-card img {
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.product-card:hover img {
+  transform: scale(1.05);
+}
+
+/* Loading Skeleton */
+.skeleton {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Responsive WhatsApp Button */
+@media (max-width: 768px) {
+  .whatsapp-float {
+    width: 50px;
+    height: 50px;
+    bottom: 20px;
+    right: 20px;
+  }
+  
+  .whatsapp-float svg {
+    width: 28px;
+    height: 28px;
+  }
+}
