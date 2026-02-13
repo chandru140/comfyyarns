@@ -30,7 +30,7 @@ const Home = () => {
         <div className="container-custom">
           <div className="max-w-4xl mx-auto text-center animate-slideInUp">
             <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-gray-800 mb-6 leading-tight">
-              ComfyYarns 🧶
+              Comfyyarns 🧶
             </h1>
             <p className="text-lg md:text-2xl text-gray-600 mb-4 font-logo">
               Crochet is a love language!
