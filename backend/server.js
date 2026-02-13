@@ -33,7 +33,7 @@ app.use(helmet({
       scriptSrc: ["'self'", "'unsafe-inline'"],
       styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
       fontSrc: ["'self'", "https://fonts.gstatic.com"],
-      connectSrc: ["'self'", "http://localhost:5001", "http://localhost:5173", "http://localhost:5174", "http://localhost:5175"],
+      connectSrc: ["'self'", "http://localhost:5001", "http://localhost:5173", "https://*.vercel.app"],
     },
   },
 }));
@@ -57,7 +57,31 @@ const loginLimiter = rateLimit({
 
 // CORS Middleware
 app.use(cors({
-  origin: ['http://localhost:5173', 'http://localhost:5174', 'http://localhost:5175'],
+  origin: function (origin, callback) {
+    const allowedOrigins = [
+      'http://localhost:5173', 
+      'http://localhost:5174', 
+      'http://localhost:5175',
+      'http://localhost:5001',
+      process.env.FRONTEND_URL
+    ];
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    
+    // Allow Vercel preview deployments
+    if (origin.endsWith('.vercel.app')) {
+      return callback(null, true);
+    }
+    
+    if (allowedOrigins.indexOf(origin) === -1) {
+      // In development, we might want to be more permissive or log it
+      if (process.env.NODE_ENV === 'development') {
+         return callback(null, true); 
+      }
+      return callback(new Error('The CORS policy for this site does not allow access from the specified Origin.'), false);
+    }
+    return callback(null, true);
+  },
   credentials: true
 }));
 

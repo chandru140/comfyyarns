@@ -1,0 +1,14 @@
+{
+  "name": "comfyyarns-root",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "install-client": "cd frontend && npm install",
+    "install-server": "cd backend && npm install",
+    "postinstall": "npm run install-client && npm run install-server",
+    "dev": "concurrently \"npm run install-server && npm run dev --prefix backend\" \"npm run install-client && npm run dev --prefix frontend\""
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
