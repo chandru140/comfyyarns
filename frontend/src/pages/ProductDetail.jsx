@@ -51,8 +51,21 @@ const ProductDetail = () => {
   }
 
   const whatsappMessage = encodeURIComponent(
-    `Hi, I am interested in ${product.name} priced at ₹${product.price}`
-  );
+`Hello! I would like to place an order for:
+
+*${product.name}*
+${product.description}
+
+Price: ₹${product.price}
+
+Kindly confirm availability and share payment details.
+
+My Details:
+Name:
+Address:
+Phone:`
+);
+
   const whatsappLink = `https://wa.me/917715010026?text=${whatsappMessage}`;
 
   return (

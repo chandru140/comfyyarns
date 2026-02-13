@@ -33,7 +33,7 @@ const Home = () => {
               Comfy Yarns 🧶
             </h1>
             <p className="text-lg md:text-2xl text-gray-600 mb-4 font-logo">
-              Handmade with Love
+              Crochet is a love language!
             </p>
             <p className="text-gray-600 mb-8 max-w-2xl mx-auto">
               Discover our collection of beautifully handcrafted crochet products. 
