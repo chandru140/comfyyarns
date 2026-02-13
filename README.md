@@ -77,13 +77,21 @@ npm run dev
 
 ## 🌐 Deployment (Vercel)
 
-This project is configured for **Zero-Config Deployment** on Vercel.
+For production, we use a **Split Deployment** strategy for maximum stability.
 
-1.  **Push** your code to GitHub.
-2.  **Import** the project in [Vercel](https://vercel.com).
-3.  **Environment Variables**: Add your backend definition variables (`MONGODB_URI`, etc.) in Vercel.
-    -   *Crucial*: Set `VITE_API_URL` to `/api` in Vercel for production.
-4.  **Deploy**: Vercel handles the build, serverless functions, and CDN automatically.
+### Part 1: Backend Deployment
+1.  Create a new project in Vercel.
+2.  Import `ComfyYarns` repo.
+3.  Set Root Directory to `backend`.
+4.  Add Environment Variables (`MONGODB_URI`, etc.).
+5.  Deploy & Copy the URL (e.g., `https://comfyyarns-api.vercel.app`).
+
+### Part 2: Frontend Deployment
+1.  Create another new project in Vercel.
+2.  Import `ComfyYarns` repo (again).
+3.  Set Root Directory to `frontend`.
+4.  Add Environment Variable: `VITE_API_URL` = `https://your-backend-url.vercel.app/api`.
+5.  Deploy! Use the frontend URL to access your site.
 
 ### Admin Setup
 To create your first admin account, you can use the hardcoded admin credentials method (see `backend/controllers/adminController.js`) or enable the registration endpoint locally.
