@@ -54,7 +54,6 @@ const ProductDetail = () => {
 `Hello! I would like to place an order for:
 
 *${product.name}*
-${product.description}
 
 Price: ₹${product.price}
 

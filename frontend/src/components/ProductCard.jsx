@@ -1,9 +1,20 @@
 import { Link } from 'react-router-dom';
 
 const ProductCard = ({ product }) => {
-  const whatsappMessage = encodeURIComponent(
-    `Hi, I am interested in ${product.name} priced at ₹${product.price}`
-  );
+   const whatsappMessage = encodeURIComponent(
+`Hello! I would like to place an order for:
+
+*${product.name}*
+
+Price: ₹${product.price}
+
+Kindly confirm availability and share payment details.
+
+My Details:
+Name:
+Address:
+Phone:`
+);
   const whatsappLink = `https://wa.me/917715010026?text=${whatsappMessage}`;
 
   // Optimize image with Cloudinary transformations
