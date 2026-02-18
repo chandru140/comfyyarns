@@ -9,7 +9,7 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-10 mb-12">
           {/* Brand */}
           <div className="md:col-span-2">
-            <h3 className="logo-text text-4xl mb-4">Comfy Yarns 🧶</h3>
+            <h3 className="logo-text text-4xl mb-4">ComfyYarns 🧶</h3>
             <p className="text-gray-600 leading-relaxed mb-6 max-w-md">
               Handmade with love, one stitch at a time. Creating beautiful, 
               unique crochet pieces that bring warmth and joy to your life.
@@ -94,7 +94,7 @@ const Footer = () => {
         {/* Copyright */}
         <div className="border-t-2 border-baby-pink-200 pt-8 text-center">
           <p className="text-gray-600 mb-2">
-            © {currentYear} <span className="font-semibold text-baby-pink-600">Comfy Yarns</span>. All rights reserved.
+            © {currentYear} <span className="font-semibold text-baby-pink-600">ComfyYarns</span>. All rights reserved.
           </p>
           <p className="text-sm text-gray-500">
             Made with <span className="text-red-500 animate-pulse">💖</span> and yarn
