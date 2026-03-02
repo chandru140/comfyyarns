@@ -1,28 +1,24 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import api from '../utils/api';
 import ProductCard from '../components/ProductCard';
 import LoadingSpinner from '../components/LoadingSpinner';
 
 const Shop = () => {
   const [products, setProducts] = useState([]);
-  const [filteredProducts, setFilteredProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [maxPrice, setMaxPrice] = useState(10000);
+  const [selectedCategory, setSelectedCategory] = useState('All');
 
   useEffect(() => {
+    document.title = 'Shop – ComfyYarns';
     fetchProducts();
   }, []);
-
-  useEffect(() => {
-    filterProducts();
-  }, [searchTerm, maxPrice, products]);
 
   const fetchProducts = async () => {
     try {
       const response = await api.get('/products');
       setProducts(response.data.products);
-      setFilteredProducts(response.data.products);
     } catch (error) {
       console.error('Error fetching products:', error);
     } finally {
@@ -30,21 +26,30 @@ const Shop = () => {
     }
   };
 
-  const filterProducts = () => {
-    let filtered = products;
+  // Derive unique categories from product list
+  const categories = useMemo(() => {
+    const cats = products.map((p) => p.category).filter(Boolean);
+    return ['All', ...new Set(cats)];
+  }, [products]);
 
-    // Filter by search term
-    if (searchTerm) {
-      filtered = filtered.filter((product) =>
+  // Derive filtered list via useMemo (no separate effect + state needed)
+  const filteredProducts = useMemo(() => {
+    return products.filter((product) => {
+      const matchesSearch =
+        !searchTerm ||
         product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        product.description.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-    }
+        product.description.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesCategory =
+        selectedCategory === 'All' || product.category === selectedCategory;
+      const matchesPrice = product.price <= maxPrice;
+      return matchesSearch && matchesCategory && matchesPrice;
+    });
+  }, [products, searchTerm, selectedCategory, maxPrice]);
 
-    // Filter by price
-    filtered = filtered.filter((product) => product.price <= maxPrice);
-
-    setFilteredProducts(filtered);
+  const clearFilters = () => {
+    setSearchTerm('');
+    setMaxPrice(10000);
+    setSelectedCategory('All');
   };
 
   return (
@@ -94,6 +99,26 @@ const Shop = () => {
             </div>
           </div>
 
+          {/* Category Chips */}
+          <div className="mt-5">
+            <p className="text-sm font-medium text-gray-700 mb-3">Category</p>
+            <div className="flex flex-wrap gap-2">
+              {categories.map((cat) => (
+                <button
+                  key={cat}
+                  onClick={() => setSelectedCategory(cat)}
+                  className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-200 border-2 ${
+                    selectedCategory === cat
+                      ? 'bg-baby-pink-500 text-white border-baby-pink-500 shadow-pink-sm'
+                      : 'bg-white text-gray-600 border-gray-200 hover:border-baby-pink-400 hover:text-baby-pink-600'
+                  }`}
+                >
+                  {cat}
+                </button>
+              ))}
+            </div>
+          </div>
+
           {/* Results Count */}
           <div className="mt-4 text-center text-gray-600">
             Showing {filteredProducts.length} of {products.length} products
@@ -112,13 +137,7 @@ const Shop = () => {
         ) : (
           <div className="text-center py-20">
             <p className="text-gray-500 text-lg mb-4">No products found</p>
-            <button
-              onClick={() => {
-                setSearchTerm('');
-                setMaxPrice(10000);
-              }}
-              className="btn-secondary"
-            >
+            <button onClick={clearFilters} className="btn-secondary">
               Clear Filters
             </button>
           </div>

@@ -5,7 +5,10 @@ function ScrollToTop() {
   const { pathname } = useLocation();
 
   useEffect(() => {
-    window.scrollTo(0, 0);
+    // Use 'instant' to bypass the CSS `scroll-behavior: smooth` rule in index.css.
+    // Without this, the smooth animation gets cut short when the new page renders,
+    // leaving the scroll position wherever it was on the previous page.
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
   }, [pathname]);
 
   return null;

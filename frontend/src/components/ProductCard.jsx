@@ -1,7 +1,13 @@
 import { Link } from 'react-router-dom';
+import { toast } from 'react-hot-toast';
+import { useCart } from '../context/CartContext';
+
+const WHATSAPP_NUMBER = import.meta.env.VITE_WHATSAPP_NUMBER || '917715010026';
 
 const ProductCard = ({ product }) => {
-   const whatsappMessage = encodeURIComponent(
+  const { addToCart } = useCart();
+
+  const whatsappMessage = encodeURIComponent(
 `Hello! I would like to place an order for:
 
 *${product.name}*
@@ -14,13 +20,18 @@ My Details:
 Name:
 Address:
 Phone:`
-);
-  const whatsappLink = `https://wa.me/917715010026?text=${whatsappMessage}`;
+  );
+  const whatsappLink = `https://wa.me/${WHATSAPP_NUMBER}?text=${whatsappMessage}`;
 
   // Optimize image with Cloudinary transformations
   const optimizeImage = (imageUrl) => {
     if (!imageUrl) return '';
     return imageUrl.replace('/upload/', '/upload/f_auto,q_auto,w_500,c_limit/');
+  };
+
+  const handleAddToCart = () => {
+    addToCart(product);
+    toast.success(`${product.name} added to cart! 🛒`, { duration: 2000 });
   };
 
   return (
@@ -51,15 +62,30 @@ Phone:`
           </h3>
         </Link>
         
-        <p className="text-gray-600 text-sm mb-3 line-clamp-2">
+        <p className="text-gray-600 text-sm mb-4 line-clamp-2">
           {product.description}
         </p>
         
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between mb-3">
           <span className="text-2xl font-bold text-baby-pink-600">
             ₹{product.price}
           </span>
-          
+        </div>
+
+        {/* Action buttons */}
+        <div className="flex gap-2">
+          {/* Add to Cart */}
+          <button
+            onClick={handleAddToCart}
+            className="flex-1 bg-baby-pink-50 text-baby-pink-600 border-2 border-baby-pink-200 hover:bg-baby-pink-500 hover:text-white hover:border-baby-pink-500 text-sm py-2 px-3 rounded-full font-medium transition-all duration-300 flex items-center justify-center gap-1.5"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-4H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+            </svg>
+            Cart
+          </button>
+
+          {/* Buy on WhatsApp */}
           <a 
             href={whatsappLink}
             target="_blank"

@@ -85,9 +85,9 @@ app.use(cors({
   credentials: true
 }));
 
-// Body Parser Middleware
-app.use(express.json({ limit: '50mb' })); // Increased limit for base64 images
-app.use(express.urlencoded({ extended: true, limit: '50mb' }));
+// Body Parser Middleware — keep global limit tight (1mb)
+app.use(express.json({ limit: '1mb' }));
+app.use(express.urlencoded({ extended: true, limit: '1mb' }));
 
 // Apply rate limiting to API routes
 app.use('/api/', apiLimiter);
@@ -96,7 +96,8 @@ app.use('/api/', apiLimiter);
 app.use('/api/products', productRoutes);
 app.use('/api/admin/login', loginLimiter); // Specific limiter for login
 app.use('/api/admin', adminRoutes);
-app.use('/api/upload', uploadRoutes);
+// Upload route gets its own 50mb body limit for base64 images
+app.use('/api/upload', express.json({ limit: '50mb' }), express.urlencoded({ extended: true, limit: '50mb' }), uploadRoutes);
 
 // Force HTTPS in production
 if (process.env.NODE_ENV === 'production') {

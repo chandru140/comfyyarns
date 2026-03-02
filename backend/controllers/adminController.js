@@ -1,13 +1,28 @@
 import Admin from '../models/Admin.js';
 import jwt from 'jsonwebtoken';
+import bcrypt from 'bcryptjs';
 import { body, validationResult } from 'express-validator';
 
-// Generate JWT Token
+// Generate JWT Token — expires in 24h (down from 30d)
 const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
-    expiresIn: '30d'
+    expiresIn: '24h'
   });
 };
+
+// Cache a bcrypt hash of the env-based ADMIN_PASSWORD at startup
+// so we never compare plain text at request time.
+let _hashedEnvPassword = null;
+const getHashedEnvPassword = async () => {
+  if (!_hashedEnvPassword && process.env.ADMIN_PASSWORD) {
+    const salt = await bcrypt.genSalt(10);
+    _hashedEnvPassword = await bcrypt.hash(process.env.ADMIN_PASSWORD, salt);
+  }
+  return _hashedEnvPassword;
+};
+
+// Pre-warm the hash on startup (fire-and-forget)
+getHashedEnvPassword();
 
 // Input validation middleware
 export const validateLogin = [
@@ -39,7 +54,6 @@ export const adminLogin = async (req, res) => {
 
     const { email, password } = req.body;
     
-    // Validate input
     if (!email || !password) {
       return res.status(400).json({ 
         success: false, 
@@ -47,14 +61,22 @@ export const adminLogin = async (req, res) => {
       });
     }
     
-    // Check for fixed admin credentials from environment variables
+    // Check fixed admin credentials from environment variables
+    // Uses bcrypt.compare — never a plain-text equality check
     const ADMIN_EMAIL = process.env.ADMIN_EMAIL;
     const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
     
-    if (ADMIN_EMAIL && ADMIN_PASSWORD && email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
-      // Generate token with a fixed admin ID for the hardcoded admin
-      const token = generateToken('fixed-admin-id');
+    if (ADMIN_EMAIL && ADMIN_PASSWORD && email === ADMIN_EMAIL) {
+      const passwordMatch = await bcrypt.compare(password, await getHashedEnvPassword());
       
+      if (!passwordMatch) {
+        return res.status(401).json({ 
+          success: false, 
+          message: 'Invalid credentials' 
+        });
+      }
+
+      const token = generateToken('fixed-admin-id');
       return res.json({
         success: true,
         token,
@@ -66,7 +88,7 @@ export const adminLogin = async (req, res) => {
       });
     }
     
-    // If not fixed admin, check database
+    // If not the env-defined admin, check database
     const admin = await Admin.findOne({ email });
     
     if (!admin) {
@@ -76,7 +98,6 @@ export const adminLogin = async (req, res) => {
       });
     }
     
-    // Check password
     const isMatch = await admin.comparePassword(password);
     
     if (!isMatch) {
@@ -86,7 +107,6 @@ export const adminLogin = async (req, res) => {
       });
     }
     
-    // Generate token
     const token = generateToken(admin._id);
     
     res.json({
@@ -107,6 +127,18 @@ export const adminLogin = async (req, res) => {
 // @access  Private
 export const verifyToken = async (req, res) => {
   try {
+    // Handle the fixed env-based admin — they don't exist in MongoDB
+    if (req.adminId === 'fixed-admin-id') {
+      return res.json({
+        success: true,
+        admin: {
+          id: 'fixed-admin-id',
+          email: process.env.ADMIN_EMAIL,
+          isFixedAdmin: true
+        }
+      });
+    }
+
     const admin = await Admin.findById(req.adminId).select('-password');
     
     if (!admin) {
@@ -119,14 +151,13 @@ export const verifyToken = async (req, res) => {
   }
 };
 
-// @desc    Create admin (use once to set up)
+// @desc    Create admin
 // @route   POST /api/admin/create
-// @access  Public (should be disabled in production)
+// @access  Controlled by ALLOW_ADMIN_CREATE env var
 export const createAdmin = async (req, res) => {
   try {
     const { email, password } = req.body;
     
-    // Check if admin already exists
     const existingAdmin = await Admin.findOne({ email });
     
     if (existingAdmin) {

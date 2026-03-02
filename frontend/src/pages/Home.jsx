@@ -9,6 +9,7 @@ const Home = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    document.title = 'ComfyYarns – Handmade Crochet with Love';
     fetchFeaturedProducts();
   }, []);
 

@@ -7,8 +7,9 @@ const router = express.Router();
 router.post('/login', validateLogin, adminLogin);
 router.post('/verify', authMiddleware, verifyToken);
 
-// Only allow admin creation in development mode
-if (process.env.NODE_ENV === 'development') {
+// Admin creation is ONLY available when ALLOW_ADMIN_CREATE=true is explicitly set.
+// Never accessible in production unless you consciously set this env var.
+if (process.env.ALLOW_ADMIN_CREATE === 'true') {
   router.post('/create', createAdmin);
 }
 
