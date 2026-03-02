@@ -91,7 +91,7 @@ const Home = () => {
         <div className="container-custom">
           <div className="max-w-3xl mx-auto text-center">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-6">
-              About Comfy Yarns
+              About Comfyyarns
             </h2>
             <p className="text-gray-600 mb-6 leading-relaxed">
               We believe in the magic of handmade. Every piece we create is crafted with 
